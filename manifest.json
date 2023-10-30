@@ -6,7 +6,7 @@
   "content_scripts": [
     {
       "js": ["src/content-script.ts"],
-      "matches": ["https://gshop.uz/*", "https://express24.uz/*"]
+      "matches": ["<all_urls>"]
     }
   ],
   "background": {

@@ -59,7 +59,7 @@ function App() {
       </div>
       <div className="attributions">
         <p>Attributions</p>
-        <a href="https://www.exchangerate-api.com">
+        <a href="https://www.exchangerate-api.com" target="_blank">
           Rates By Exchange Rate API
         </a>
       </div>

@@ -23,21 +23,22 @@ function convertToUSD(_match: string, value: string, _currency: string) {
 }
 
 function replaceCurrencyValues() {
-  const elements = document.createTreeWalker(
+  const textNodes = document.createTreeWalker(
     document.body,
-    NodeFilter.SHOW_ELEMENT,
+    NodeFilter.SHOW_TEXT,
     null
   );
 
-  let currentElement;
+  let currentNode;
 
-  while ((currentElement = elements.nextNode())) {
-    if (!currentElement.textContent) return null;
+  while ((currentNode = textNodes.nextNode())) {
+    if (!currentNode.textContent) continue;
 
-    const match = XRegExp.exec(currentElement.textContent, pattern);
+    const match = XRegExp.exec(currentNode.textContent, pattern);
+
     if (match) {
       const convertedValue = convertToUSD(match[0], match[1], match[2]);
-      currentElement.textContent = currentElement.textContent.replace(
+      currentNode.textContent = currentNode.textContent.replace(
         pattern,
         convertedValue
       );

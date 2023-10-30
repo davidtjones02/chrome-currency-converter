@@ -2,5 +2,11 @@
   "manifest_version": 3,
   "name": "Chrome Currency Extension",
   "version": "1.0.0",
-  "action": { "default_popup": "index.html" }
+  "action": { "default_popup": "index.html" },
+  "content_scripts": [
+    {
+      "js": ["src/content-script.ts"],
+      "matches": ["https://gshop.uz/*", "https://express24.uz/*"]
+    }
+  ]
 }

@@ -8,8 +8,5 @@
       "js": ["src/content-script.ts"],
       "matches": ["<all_urls>"]
     }
-  ],
-  "background": {
-    "scripts": ["src/background.ts"]
-  }
+  ]
 }

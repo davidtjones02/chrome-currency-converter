@@ -1,5 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import XRegExp from "xregexp";
+import axios from "axios";
+
+let conversion_rate = 12200.95;
+
+(async () => {
+  const savedData = localStorage.getItem("exchangeData");
+  if (savedData) {
+    const { timestamp, exchange_rate } = JSON.parse(savedData);
+
+    if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
+      conversion_rate = exchange_rate;
+      return;
+    }
+  }
+
+  try {
+    const result = await axios.get(`https://open.er-api.com/v6/latest/USD`);
+
+    if (result.data.result === "success") {
+      const exchange_rate = result.data.rates.UZS;
+      localStorage.setItem(
+        "exchangeData",
+        JSON.stringify({ timestamp: Date.now(), exchange_rate })
+      );
+    }
+  } catch (err) {
+    console.error("Failed to fetch exchange rate:", err);
+  }
+})();
 
 XRegExp.install({
   astral: true,
@@ -14,11 +43,9 @@ const pattern = XRegExp(
   "x"
 );
 
-const CONVERSION_RATE = 12200.95;
-
 function convertToUSD(_match: string, value: string, _currency: string) {
   const cleanValue = parseFloat(value.replace(/[ ,]/g, "").replace(",", "."));
-  const usdValue = (cleanValue / CONVERSION_RATE).toFixed(2);
+  const usdValue = (cleanValue / conversion_rate).toFixed(2);
   return `${usdValue} USD`;
 }
 

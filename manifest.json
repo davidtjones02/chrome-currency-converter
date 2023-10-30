@@ -8,5 +8,8 @@
       "js": ["src/content-script.ts"],
       "matches": ["https://gshop.uz/*", "https://express24.uz/*"]
     }
-  ]
+  ],
+  "background": {
+    "scripts": ["src/background.ts"]
+  }
 }

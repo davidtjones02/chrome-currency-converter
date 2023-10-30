@@ -1,10 +1,45 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
+
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [currencies, setCurrencies] = useState({
+    from: "UZS",
+    to: "USD",
+    exchange_rate: 0,
+  });
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    (async () => {
+      const savedData = localStorage.getItem("exchangeData");
+      if (savedData) {
+        const { timestamp, exchange_rate } = JSON.parse(savedData);
+
+        if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
+          setCurrencies({
+            ...currencies,
+            exchange_rate,
+          });
+          return;
+        }
+      }
+
+      try {
+        const result = await axios.get(`https://open.er-api.com/v6/latest/USD`);
+
+        if (result.data.result === "success") {
+          const exchange_rate = result.data.rates.UZS;
+          localStorage.setItem(
+            "exchangeData",
+            JSON.stringify({ timestamp: Date.now(), exchange_rate })
+          );
+        }
+      } catch (err) {
+        console.error("Failed to fetch exchange rate:", err);
+      }
+    })();
+  }, [currencies]);
 
   return (
     <>
@@ -16,18 +51,18 @@ function App() {
           {/* <img src={reactLogo} className="logo react" alt="React logo" /> */}
         </a>
       </div>
-      <h1>Vite + React</h1>
+      <h1>Currency Converter v1</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <p>From: {currencies.from}</p>
+        <p>To: {currencies.to}</p>
+        <p>Exchange Rate: {currencies.exchange_rate}</p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <div className="attributions">
+        <p>Attributions</p>
+        <a href="https://www.exchangerate-api.com">
+          Rates By Exchange Rate API
+        </a>
+      </div>
     </>
   );
 }
